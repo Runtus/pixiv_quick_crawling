@@ -1,4 +1,4 @@
-let { config } = require("./config")
+let { config } = require("./src/config")
 let fs = require("fs");
 let { crawlOriginUrl } = require("./lib/StorageLocalImage")
 let { crawl } = require("./lib/GetImageId");
