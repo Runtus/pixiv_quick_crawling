@@ -1,7 +1,7 @@
 // http请求token
 const qs = require("qs");
 const headers = require('@/lib/requestHeader').maskHeader
-const request = require('@/helpers/request')
+const { request } = require('@/helpers/request')
 
 
 

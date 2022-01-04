@@ -1,6 +1,6 @@
 const header = require('../requestHeader').maskHeader
 const qs = require('qs')
-const request = require('@/helpers/request')
+const { request } = require('@/helpers/request')
 
 
 module.exports = async function getRanking(mode, date, token) {
@@ -18,7 +18,7 @@ module.exports = async function getRanking(mode, date, token) {
         }
     }
 
-    const reponse = await request(options)
+    const response = await request(options)
 
-    return reponse
+    return response
 }
