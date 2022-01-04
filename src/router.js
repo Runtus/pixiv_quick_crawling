@@ -1,9 +1,12 @@
-const Router = require('@koa/router')
-const router = new Router()
+const Router = require("@koa/router");
+const router = new Router();
 
-const rankingIllusts = require('./lib/ranking')
+const {
+  rankingCacheCheck,
+  ranking,
+  rankingCacheRefresh,
+} = require("./lib/ranking");
 
-router.get('/illusts', rankingIllusts)
+router.get("/illusts/top", rankingCacheCheck, ranking, rankingCacheRefresh);
 
-
-module.exports = router
+module.exports = router;
