@@ -1,8 +1,9 @@
 const oss = require('ali-oss')
+const key = require('./oss.json')
 
 const client = new oss({
-    accessKeyId : "LTAI4FskGErR3Y576ZUSEzT6",
-    accessKeySecret : "NpcnD4JuKIt0IR275uVSzHLLVsLMCy",
+    accessKeyId : key.accessKeyId,
+    accessKeySecret : key.accessKeySecret,
     bucket : "lao-lan-go",
     region:  "oss-cn-beijing"
 });

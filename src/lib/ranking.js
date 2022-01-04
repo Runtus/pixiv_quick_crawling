@@ -14,33 +14,44 @@ class Illust {
 }
 
 const rankingCacheCheck = async (ctx, next) => {
+    const tops = ctx.query.tops || 10
     if (cache.time && cache.time === timeFormatYMD(new Date().getTime())) {
         ctx.body = {
-            data: cache
+            time: cache.time,
+            imageUrls: cache.imageUrls.slice(0, tops)
         }
+        
     } else {
         return next()
     }
 }
 
 const ranking = async (ctx, next) => {
-    const yesterday = new Date().getTime() - 1000 * 60 * 60 * 24;
+    const timeStamp = new Date();
+    const yesterday = timeStamp - 1000 * 60 * 60 * 24;
     const mode = ctx.query.ranking || 'day'
+    const tops = ctx.query.tops || 10
     const tokenResponse = await getToken()
+
     const response = await getRanking(mode, new Date(ctx.query.date || yesterday), tokenResponse.token);
+    console.log(response.illusts)
     // response.illusts
     // TODO 新增一个字段，可以自选top范围，目前top范围为 top10
-    const top = response.illusts.slice(0,10)
-    const format = top.map(item =>
+    const format = response.illusts.map(item =>
         new Illust(item.id, item.title, item.image_urls.large)
     )
 
     const promises = await Promise.all(format.map(item => getIllusts(item)))
 
+    ctx.writeJson = {
+        imageUrls: promises,
+        time: timeFormatYMD(timeStamp)
+    }
+
     ctx.body = {
         data: {
-            time: timeFormatYMD(new Date().getTime()),
-            imageUrls: promises
+            time: timeFormatYMD(timeStamp),
+            imageUrls: promises.slice(0, tops)
         }
     }
 
@@ -48,7 +59,7 @@ const ranking = async (ctx, next) => {
 }
 
 const rankingCacheRefresh = async (ctx) => {
-    fs.writeFile('./src/cache/cache.json', JSON.stringify(ctx.body.data), err => {
+    fs.writeFile('./src/cache/cache.json', JSON.stringify(ctx.writeJson), err => {
         if (err) {
             console.error('写入数据失败')
         }

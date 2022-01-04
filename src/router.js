@@ -7,6 +7,6 @@ const {
   rankingCacheRefresh,
 } = require("./lib/ranking");
 
-router.get("/illusts", rankingCacheCheck, ranking, rankingCacheRefresh);
+router.get("/illusts/top", rankingCacheCheck, ranking, rankingCacheRefresh);
 
 module.exports = router;

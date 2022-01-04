@@ -6,12 +6,13 @@ const headers = {
     "Referer": 'https://app-api.pixiv.net/'
 }
 
+let num = 0;
+
 /**
  * 
  * @param {{id: string, title: string, url: string}} imageMeta 
  */
 module.exports = async (imageMeta) => {
-    console.log(imageMeta)
     const options = {
         headers,
         url: imageMeta.url,
@@ -20,9 +21,12 @@ module.exports = async (imageMeta) => {
 
     return axios(options)
         .then(res => oss.put(`/pixiv/day/${imageMeta.id}.png`, res.data))
-        .then(res => ({
+        .then(res => {
+        
+            
+            return ({
             url: res.url,
             title: imageMeta.title,
-            id: imageMeta.title
-        }))
+            id: imageMeta.id
+        })})
 }
