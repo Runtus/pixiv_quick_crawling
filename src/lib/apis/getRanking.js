@@ -18,6 +18,8 @@ module.exports = async function getRanking(mode, date, token) {
         }
     }
 
+    console.log(options)
+
     const response = await request(options)
 
     return response

@@ -14,27 +14,29 @@ class Illust {
 }
 
 const rankingCacheCheck = async (ctx, next) => {
-    const tops = ctx.query.tops || 10
-    if (cache.time && cache.time === timeFormatYMD(new Date().getTime())) {
+    const tops = ctx.query.tops || 10;
+
+    if (cache.imageUrls.length && cache.time && cache.time === timeFormatYMD(new Date().getTime())) {
         ctx.body = {
-            time: cache.time,
-            imageUrls: cache.imageUrls.slice(0, tops)
+            pixiv: {
+                time: cache.time,
+                imageUrls: cache.imageUrls.slice(0, tops)
+            }
         }
-        
+
     } else {
         return next()
     }
 }
 
 const ranking = async (ctx, next) => {
-    const timeStamp = new Date();
-    const yesterday = timeStamp - 1000 * 60 * 60 * 24;
+    const timeStamp = new Date().getTime();
+    const yesterday = timeStamp - 1000 * 60 * 60 * 48;
     const mode = ctx.query.ranking || 'day'
     const tops = ctx.query.tops || 10
     const tokenResponse = await getToken()
-
     const response = await getRanking(mode, new Date(ctx.query.date || yesterday), tokenResponse.token);
-    console.log(response.illusts)
+    console.log(response)
     // response.illusts
     // TODO 新增一个字段，可以自选top范围，目前top范围为 top10
     const format = response.illusts.map(item =>
@@ -49,7 +51,7 @@ const ranking = async (ctx, next) => {
     }
 
     ctx.body = {
-        data: {
+        pixiv: {
             time: timeFormatYMD(timeStamp),
             imageUrls: promises.slice(0, tops)
         }
