@@ -19,14 +19,17 @@ module.exports = async (imageMeta) => {
         responseType: "stream"
     }
 
-    return axios(options)
+    return await axios(options)
         .then(res => oss.put(`/pixiv/day/${imageMeta.id}.png`, res.data))
         .then(res => {
-        
-            
             return ({
             url: res.url,
             title: imageMeta.title,
             id: imageMeta.id
-        })})
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            return 'error'
+        })
 }
