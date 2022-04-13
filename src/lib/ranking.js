@@ -15,8 +15,7 @@ class Illust {
 
 const rankingCacheCheck = async (ctx, next) => {
     const tops = ctx.query.tops || 10;
-
-    if (cache.imageUrls.length && cache.time && cache.time === timeFormatYMD(new Date().getTime())) {
+    if (cache.imageUrls && cache.imageUrls.length && !cache.imageUrls.some(item => item.id === 'error') && cache.time === timeFormatYMD(new Date().getTime())) {
         ctx.body = {
             pixiv: {
                 time: cache.time,
@@ -31,7 +30,7 @@ const rankingCacheCheck = async (ctx, next) => {
 
 const ranking = async (ctx, next) => {
     const timeStamp = new Date().getTime();
-    const yesterday = timeStamp - 1000 * 60 * 60 * 48;
+    const yesterday = timeStamp - 1000 * 60 * 60 * 24;
     const mode = ctx.query.ranking || 'day'
     const tops = ctx.query.tops || 10
     const tokenResponse = await getToken()
@@ -43,17 +42,17 @@ const ranking = async (ctx, next) => {
         new Illust(item.id, item.title, item.image_urls.large)
     )
 
-    const promises = await Promise.all(format.map(item => getIllusts(item)))
+    const ossImages = await Promise.all(format.map(item => getIllusts(item)))
 
     ctx.writeJson = {
-        imageUrls: promises,
+        imageUrls: ossImages,
         time: timeFormatYMD(timeStamp)
     }
 
     ctx.body = {
         pixiv: {
             time: timeFormatYMD(timeStamp),
-            imageUrls: promises.slice(0, tops)
+            imageUrls: ossImages.slice(0, tops)
         }
     }
 

@@ -23,13 +23,17 @@ module.exports = async (imageMeta) => {
         .then(res => oss.put(`/pixiv/day/${imageMeta.id}.png`, res.data))
         .then(res => {
             return ({
-            url: res.url,
-            title: imageMeta.title,
-            id: imageMeta.id
+                url: res.url,
+                title: imageMeta.title,
+                id: imageMeta.id
             })
         })
         .catch(err => {
             console.log(err)
-            return 'error'
+            return {
+                url: 'https://lao-lan-go.oss-cn-beijing.aliyuncs.com/404.png',
+                title: '图片获取失败',
+                id: 'error'
+            }
         })
 }
